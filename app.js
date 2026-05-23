@@ -92,7 +92,7 @@ const meals = [
     },
     {
         id: 34, title: "Lobster Thermidor", category: "Mains", price: 42.00,
-        image: "img/Lobster Thermidor.jpg", 
+        image: "img/Lobster Thermidor.jpg",
         desc: "Lobster meat cooked in a rich cognac mustard cream sauce, topped with Gruyere cheese.",
         ingredients: [
             { name: "Lobster", desc: "Fresh whole tail", removable: false, price: 0, img: "https://images.unsplash.com/photo-1574781330855-d0db8ce60179?ixlib=rb-4.0.3" },
@@ -788,10 +788,68 @@ const meals = [
     }
 ];
 
-let cart = JSON.parse(localStorage.getItem('papomotto_cart') || '[]');
-let currentLocation = localStorage.getItem('papomotto_location') || '';
-let currentCategory = localStorage.getItem('papomotto_category') || 'All';
-let currentSearch = localStorage.getItem('papomotto_search') || '';
+let cart;
+let currentLocation;
+let currentCategory;
+let currentSearch;
+
+try {
+    cart = JSON.parse(localStorage.getItem('papomotto_cart') || '[]');
+    currentLocation = localStorage.getItem('papomotto_location') || '';
+    currentCategory = localStorage.getItem('papomotto_category') || 'All';
+    currentSearch = localStorage.getItem('papomotto_search') || '';
+} catch (e) {
+    cart = [];
+    currentLocation = '';
+    currentCategory = 'All';
+    currentSearch = '';
+}
+
+/* ── Offers / Specials ── */
+const offers = [
+  {
+    id: 'off-1',
+    type: 'combo',
+    title: 'Breakfast Combo',
+    subtitle: 'Pancakes + Coffee = $12',
+    discount: 'Save 20%',
+    bgLinear: 'linear-gradient(135deg, #718355 0%, #97A97C 100%)',
+  },
+  {
+    id: 'off-2',
+    type: 'percent',
+    title: 'Happy Hour',
+    subtitle: '50% off all cocktails · 4–7PM',
+    discount: '50% OFF',
+    bgLinear: 'linear-gradient(135deg, #87986A 0%, #718355 100%)',
+  },
+  {
+    id: 'off-3',
+    type: 'new',
+    title: 'New Dish',
+    subtitle: 'Lobster Thermidor is here',
+    discount: 'Try Now',
+    bgLinear: 'linear-gradient(135deg, #97A97C 0%, #718355 100%)',
+  },
+];
+
+function renderOffers() {
+  const strip = document.getElementById('offers-section');
+  if (!strip) return;
+  if (!offers.length) { strip.style.display = 'none'; return; }
+
+  strip.innerHTML = offers.map(off => `
+    <div class="offer-card" style="background-image: ${off.bgLinear}; background-color: var(--primary);">
+      <span class="offer-badge-off">${off.discount}</span>
+      <span class="off-eyebrow">${off.type === 'combo' ? 'COMBO DEAL' : off.type === 'percent' ? 'PROMO' : 'JUST ARRIVED'}</span>
+      <span class="off-title">${off.title}</span>
+      <span class="off-sub">${off.subtitle}</span>
+    </div>
+  `).join('');
+  strip.style.display = 'flex';
+}
+
+/* ── State ── */
 
 function saveState() {
     localStorage.setItem('papomotto_cart', JSON.stringify(cart));
@@ -818,7 +876,7 @@ function simulateScan(location) {
     document.getElementById('current-location').innerText = location;
     document.querySelectorAll('.current-location-display').forEach(el => el.innerText = location);
     document.getElementById('success-location').innerText = location;
-    
+
     switchScreen('categories-screen');
 }
 
@@ -3188,13 +3246,13 @@ async function detectLocationAndLanguage() {
     const deviceLang = navigator.language || 'en-US';
     const langCode = deviceLang.split('-')[0].toLowerCase();
     const regionCode = deviceLang.split('-')[1]?.toUpperCase();
-    
+
     if (translations[langCode]) {
         currentLang = langCode;
     } else {
         currentLang = 'en';
     }
-    
+
     if (regionCode) {
         const regionToCurrency = {
             'US': 'USD', 'GB': 'GBP', 'JP': 'JPY', 'CA': 'CAD', 'AU': 'AUD', 'CN': 'CNY', 'BR': 'BRL', 'MX': 'MXN', 'IN': 'INR', 'UG': 'UGX',
@@ -3204,18 +3262,18 @@ async function detectLocationAndLanguage() {
             currentCurrency = regionToCurrency[regionCode];
         }
     }
-    
+
     // 2. Restore overrides from localStorage
     const savedLang = localStorage.getItem('papomotto_lang');
     const savedCurrency = localStorage.getItem('papomotto_currency');
-    
+
     if (savedLang && translations[savedLang]) {
         currentLang = savedLang;
     }
     if (savedCurrency && currencies[savedCurrency]) {
         currentCurrency = savedCurrency;
     }
-    
+
     // 3. Optional IP Geolocation fetch if preferences not manually set
     if (!savedLang && !savedCurrency) {
         try {
@@ -3226,7 +3284,7 @@ async function detectLocationAndLanguage() {
                     currentCurrency = data.currencyCode;
                     localStorage.setItem('papomotto_currency', currentCurrency);
                 }
-                
+
                 const countryToLang = {
                     'ES': 'es', 'MX': 'es', 'AR': 'es', 'CO': 'es', 'PE': 'es', 'VE': 'es', 'CL': 'es',
                     'FR': 'fr', 'CA': 'en', 'JP': 'ja', 'CN': 'zh', 'TW': 'zh', 'HK': 'zh',
@@ -3237,7 +3295,7 @@ async function detectLocationAndLanguage() {
                     currentLang = countryToLang[data.countryCode];
                     localStorage.setItem('papomotto_lang', currentLang);
                 }
-                
+
                 if (data.cityName || data.countryName) {
                     detectedLocationName = data.cityName ? `${data.cityName}, ${data.countryName}` : data.countryName;
                 }
@@ -3248,7 +3306,7 @@ async function detectLocationAndLanguage() {
     } else {
         detectedLocationName = "Browser Settings (Default)";
     }
-    
+
     applyLocalization();
 }
 
@@ -3311,10 +3369,12 @@ function applyLocalization() {
 
 // Menu Rendering
 function renderMenu() {
+    renderOffers();
+
     const container = document.getElementById('menu-items-container');
     if (!container) return;
     container.innerHTML = '';
-    
+
     let filtered = meals;
     if (currentCategory !== 'All') {
         filtered = filtered.filter(m => m.category === currentCategory);
@@ -3323,7 +3383,7 @@ function renderMenu() {
         filtered = filtered.filter(m => {
             const englishTitle = m.title.toLowerCase();
             const translatedTitle = getTranslation(m.title).toLowerCase();
-            return englishTitle.includes(currentSearch.toLowerCase()) || 
+            return englishTitle.includes(currentSearch.toLowerCase()) ||
                    translatedTitle.includes(currentSearch.toLowerCase());
         });
     }
@@ -3339,7 +3399,6 @@ function renderMenu() {
                     <h3 class="meal-title">${getTranslation(meal.title)}</h3>
                     <span class="meal-price">${formatPrice(meal.price)}</span>
                 </div>
-                <p class="meal-desc">${getTranslation(meal.desc)}</p>
                 <button class="add-btn">${getTranslation('customize_add')}</button>
             </div>
         `;
@@ -3369,21 +3428,29 @@ if (searchInput) {
 // Modal Customization
 function openItemModal(id) {
     activeModalItem = meals.find(m => m.id === id);
+    if (!activeModalItem) {
+        console.error('Meal not found:', id);
+        return;
+    }
     activeModalQty = 1;
-    activeModalCustoms = activeModalItem.ingredients.map(ing => ({...ing, qty: ing.removable ? 1 : 1, isAddon: ing.price > 0 && ing.removable ? 0 : 1}));
-    
+    activeModalCustoms = (activeModalItem.ingredients || []).map(ing => ({...ing, qty: ing.removable ? 1 : 1, isAddon: ing.price > 0 && ing.removable ? 0 : 1}));
+
     activeModalCustoms.forEach(c => {
         if(c.price > 0) c.qty = 0;
     });
 
-    document.getElementById('modal-image').src = activeModalItem.image;
-    document.getElementById('modal-title').innerText = getTranslation(activeModalItem.title);
-    document.getElementById('modal-desc').innerText = getTranslation(activeModalItem.desc);
-    
+    const modalImg = document.getElementById('modal-image');
+    if (modalImg) modalImg.src = activeModalItem.image;
+    const modalTitle = document.getElementById('modal-title');
+    if (modalTitle) modalTitle.innerText = getTranslation(activeModalItem.title);
+    const modalDesc = document.getElementById('modal-desc');
+    if (modalDesc) modalDesc.innerText = getTranslation(activeModalItem.desc);
+
     updateModalPrice();
     renderIngredients();
-    
-    document.getElementById('item-modal').classList.remove('hidden');
+
+    const itemModal = document.getElementById('item-modal');
+    if (itemModal) itemModal.classList.remove('hidden');
 }
 
 function closeItemModal() {
@@ -3392,19 +3459,20 @@ function closeItemModal() {
 }
 
 function updateModalPrice() {
-    if (!activeModalItem) return;
+    if (!activeModalItem || !activeModalCustoms) return;
     let base = activeModalItem.price;
     let extra = 0;
     activeModalCustoms.forEach(c => {
-        extra += c.price * c.qty;
+        extra += (c.price || 0) * (c.qty || 0);
     });
     let total = (base + extra) * activeModalQty;
-    
+
     const btn = document.querySelector('.add-to-cart-btn');
     if (btn) {
-        btn.innerHTML = `${getTranslation('add')} - <span id="modal-btn-total">${formatPrice(total)}</span>`;
+        btn.innerHTML = `${getTranslation('add')}`;
     }
-    document.getElementById('modal-qty').innerText = activeModalQty;
+    const modalQty = document.getElementById('modal-qty');
+    if (modalQty) modalQty.innerText = activeModalQty;
 }
 
 function changeModalQty(delta) {
@@ -3416,12 +3484,12 @@ function changeModalQty(delta) {
 
 function renderIngredients() {
     const list = document.getElementById('ingredients-list');
-    if (!list) return;
+    if (!list || !activeModalCustoms) return;
     list.innerHTML = '';
-    
+
     activeModalCustoms.forEach((ing, index) => {
         if(!ing.removable && ing.price === 0) return;
-        
+
         const item = document.createElement('div');
         item.className = 'ingredient-item';
         item.innerHTML = `
@@ -3433,7 +3501,7 @@ function renderIngredients() {
             <div class="ing-controls">
                 <span class="ing-price">${ing.price > 0 ? '+' + formatPrice(ing.price) : ''}</span>
                 <button class="ing-btn" onclick="changeIngQty(${index}, -1)">-</button>
-                <span class="ing-qty">${ing.qty}</span>
+                <span class="ing-qty">${ing.qty || 0}</span>
                 <button class="ing-btn" onclick="changeIngQty(${index}, 1)">+</button>
             </div>
         `;
@@ -3452,15 +3520,19 @@ function changeIngQty(index, delta) {
 
 // Cart Management
 function addToCart() {
+    if (!activeModalItem) {
+        console.error('No meal selected');
+        return;
+    }
     let customsNotes = [];
     activeModalCustoms.forEach(c => {
-        if (c.price === 0 && c.qty === 0) customsNotes.push(`No ${c.name}`);
-        if (c.price > 0 && c.qty > 0) customsNotes.push(`${c.qty}x ${c.name}`);
+        if (c.price === 0 && (c.qty || 0) === 0) customsNotes.push(`No ${c.name}`);
+        if (c.price > 0 && (c.qty || 0) > 0) customsNotes.push(`${c.qty}x ${c.name}`);
     });
-    
+
     let extra = 0;
-    activeModalCustoms.forEach(c => extra += c.price * c.qty);
-    
+    activeModalCustoms.forEach(c => extra += (c.price || 0) * (c.qty || 0));
+
     const cartItem = {
         id: Date.now(),
         mealId: activeModalItem.id,
@@ -3470,7 +3542,7 @@ function addToCart() {
         image: activeModalItem.image,
         customs: customsNotes.join(', ')
     };
-    
+
     cart.push(cartItem);
     saveState();
     updateCartUI();
@@ -3494,7 +3566,7 @@ function updateCartUI() {
         if(bottomBadge) bottomBadge.innerText = totalItems;
         const topFloat = document.getElementById('cart-total-float');
         if(topFloat) topFloat.innerText = formatPrice(totalPriceUsd);
-        
+
         if(topBadge) {
             topBadge.innerText = totalItems;
             topBadge.style.display = 'block';
@@ -3518,12 +3590,12 @@ function renderCartItems() {
     const container = document.getElementById('cart-items-container');
     if (!container) return;
     container.innerHTML = '';
-    
+
     let subtotalUsd = 0;
-    
+
     cart.forEach((item, index) => {
-        subtotalUsd += item.price * item.qty;
-        
+        subtotalUsd += (item.price || 0) * (item.qty || 0);
+
         let displayCustoms = '';
         if (item.customs) {
             const parts = item.customs.split(', ');
@@ -3547,8 +3619,8 @@ function renderCartItems() {
         div.innerHTML = `
             <img src="${item.image}" alt="${getTranslation(item.title)}" class="cart-item-img">
             <div class="cart-item-info">
-                <div class="cart-item-title">${item.qty}x ${getTranslation(item.title)}</div>
-                <div class="cart-item-price">${formatPrice(item.price * item.qty)}</div>
+                <div class="cart-item-title">${item.qty || 1}x ${getTranslation(item.title)}</div>
+                <div class="cart-item-price">${formatPrice((item.price || 0) * (item.qty || 1))}</div>
                 ${displayCustoms ? `<div class="cart-item-customs">${displayCustoms}</div>` : ''}
             </div>
             <div class="cart-item-actions">
@@ -3557,13 +3629,16 @@ function renderCartItems() {
         `;
         container.appendChild(div);
     });
-    
+
     const taxUsd = subtotalUsd * 0.10;
     const totalUsd = subtotalUsd + taxUsd;
-    
-    document.getElementById('cart-subtotal').innerText = formatPrice(subtotalUsd);
-    document.getElementById('cart-tax').innerText = formatPrice(taxUsd);
-    document.getElementById('cart-final-total').innerText = formatPrice(totalUsd);
+
+    const subtotalEl = document.getElementById('cart-subtotal');
+    if (subtotalEl) subtotalEl.innerText = formatPrice(subtotalUsd);
+    const taxEl = document.getElementById('cart-tax');
+    if (taxEl) taxEl.innerText = formatPrice(taxUsd);
+    const totalEl = document.getElementById('cart-final-total');
+    if (totalEl) totalEl.innerText = formatPrice(totalUsd);
 }
 
 function removeFromCart(index) {
@@ -3575,35 +3650,38 @@ function removeFromCart(index) {
 }
 
 function submitOrder() {
-    if(cart.length === 0) return;
-    
-    const notes = document.getElementById('order-notes').value;
+    if(!cart || cart.length === 0) return;
+
+    const notesEl = document.getElementById('order-notes');
+    const notes = notesEl ? notesEl.value : '';
     let totalUsd = 0;
-    cart.forEach(item => totalUsd += item.price * item.qty);
+    cart.forEach(item => totalUsd += (item.price || 0) * (item.qty || 0));
     const taxUsd = totalUsd * 0.10;
     const finalTotalUsd = totalUsd + taxUsd;
-    
+
     const order = {
         id: '#' + Math.floor(Math.random() * 10000),
-        location: currentLocation,
+        location: currentLocation || 'Unknown',
         items: cart,
         notes: notes,
         time: new Date().toISOString(),
         status: 'incoming',
-        currency: currentCurrency,
+        currency: currentCurrency || 'USD',
         totalFormatted: formatPrice(finalTotalUsd)
     };
-    
+
     let orders = JSON.parse(localStorage.getItem('papomotto_orders') || '[]');
     orders.push(order);
     localStorage.setItem('papomotto_orders', JSON.stringify(orders));
-    
+
     window.dispatchEvent(new Event('storage'));
-    
-    const descText = getTranslation('order_success_desc').replace('{location}', `<b>${currentLocation}</b>`);
-    document.querySelector('#success-modal p').innerHTML = descText;
-    
-    document.getElementById('success-modal').classList.remove('hidden');
+
+    const descText = getTranslation('order_success_desc').replace('{location}', `<b>${currentLocation || 'your location'}</b>`);
+    const modal = document.querySelector('#success-modal p');
+    if (modal) modal.innerHTML = descText;
+
+    const successModal = document.getElementById('success-modal');
+    if (successModal) successModal.classList.remove('hidden');
 }
 
 function resetApp() {
@@ -3615,9 +3693,11 @@ function resetApp() {
     localStorage.removeItem('papomotto_location');
     localStorage.removeItem('papomotto_category');
     localStorage.removeItem('papomotto_search');
-    document.getElementById('order-notes').value = '';
+    const notesEl = document.getElementById('order-notes');
+    if (notesEl) notesEl.value = '';
     updateCartUI();
-    document.getElementById('success-modal').classList.add('hidden');
+    const successModal = document.getElementById('success-modal');
+    if (successModal) successModal.classList.add('hidden');
     switchScreen('qr-screen');
 }
 
@@ -3633,19 +3713,19 @@ function restoreAppState() {
         document.querySelectorAll('.current-location-display').forEach(el => el.innerText = currentLocation);
         document.getElementById('success-location').innerText = currentLocation;
     }
-    
+
     // Restore category filter active state
     if (currentCategory) {
         document.querySelectorAll('.category-chip').forEach(c => {
             c.classList.toggle('active', c.getAttribute('data-category') === currentCategory);
         });
     }
-    
+
     // Render menu with restored filters
     if (typeof renderMenu === 'function') {
         renderMenu();
     }
-    
+
     // Update cart UI
     updateCartUI();
 }
