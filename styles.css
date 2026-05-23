@@ -1,0 +1,629 @@
+:root {
+  /* Core brand colors */
+  --primary: #4a90d9;
+  --secondary-1: #ff6b6b;
+  --secondary-2: #4ecdc4;
+
+  /* Light theme palette */
+  --bg-light: #f8f9fa;
+  --bg-dark: #1a1a1a; /* unused but retained */
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --text-muted: #666666;
+  --card-bg: #ffffff;
+  --card-border: #e0e0e0;
+  --input-bg: #f5f5f5;
+  --header-bg: #ffffff;
+  --btn-primary: #4a90d9;
+  --btn-primary-text: #ffffff;
+}
+
+[data-theme="dark"] {
+  --primary: #6ab0f3;
+  --secondary-1: #ff8585;
+  --secondary-2: #6ed7d0;
+  --bg-light: #121212;
+  --bg-dark: #0a0a0a;
+  --bg-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --text-muted: #aaaaaa;
+  --card-bg: #2d2d2d;
+  --card-border: #404040;
+  --input-bg: #2a2a2a;
+  --header-bg: #1e1e1e;
+  --btn-primary: #6ab0f3;
+  --btn-primary-text: #ffffff;
+}
+
+/* Global reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* Screen handling */
+.screen {
+  display: none;
+}
+.screen.active {
+  display: block;
+}
+.screen.hidden {
+  display: none !important;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.primary-btn {
+  background-color: var(--btn-primary);
+  color: var(--btn-primary-text);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.primary-btn:active {
+  transform: scale(0.98);
+}
+
+/* Icon button – unified style */
+.icon-btn {
+  background: var(--card-bg);
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+.icon-btn:hover {
+  background-color: var(--input-bg);
+}
+
+/* Header */
+.menu-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 500px;
+  align-self: flex-end;
+  position: relative;
+}
+.search-bar i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+.search-bar input {
+  width: 100%;
+  padding: 12px 15px 12px 40px;
+  border-radius: 25px;
+  border: 1px solid var(--card-border);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  outline: none;
+}
+
+/* Floating Cart – premium glass‑morphic style */
+.floating-cart {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  height: 65px;
+  border-radius: 35px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  color: var(--text-color);
+  border: 1px solid rgba(255,255,255,0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  z-index: 99;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, box-shadow 0.2s ease;
+  opacity: 0;
+  transform: translateY(100px) scale(0.9);
+  pointer-events: none;
+}
+.floating-cart.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  animation: slideUpBounce 0.6s ease-out forwards;
+}
+.floating-cart:active {
+  transform: scale(0.97);
+}
+.floating-cart .cart-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+}
+.floating-cart .badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: #ff4757;
+  color: #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.floating-cart-text {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.floating-cart .cart-total {
+  font-weight: 800;
+  font-size: 1rem;
+  background: rgba(255,255,255,0.15);
+  padding: 6px 14px;
+  border-radius: 18px;
+}
+[data-theme="dark"] .floating-cart .cart-total {
+  background: rgba(0,0,0,0.2);
+}
+
+/* Category cards */
+.category-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 25px 15px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+.category-card:active {
+  transform: scale(0.95);
+}
+
+/* Cart screen */
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--card-border);
+}
+.cart-main {
+  padding: 20px 24px 100px;
+  flex: 1;
+  overflow-y: auto;
+}
+.cart-item-info {
+  flex: 1;
+}
+.cart-item-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+.cart-item-price {
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.cart-item-customs {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+.remove-btn {
+  background: none;
+  border: none;
+  color: #ff4757;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.cart-notes {
+  margin-top: 25px;
+}
+.cart-notes label {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.cart-notes textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  resize: none;
+}
+.cart-summary {
+  margin-top: 30px;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 25px;
+  border: 1px solid var(--card-border);
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.summary-row.total {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px dashed var(--card-border);
+}
+.cart-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--card-border);
+}
+
+/* Modals */
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-color);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-out;
+}
+.modal.hidden {
+  display: none !important;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+.modal-content {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin: auto;
+}
+.modal-details {
+  padding: 20px 24px;
+  background: var(--card-bg);
+}
+.modal-details h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.modal-details p {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.customization h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+#ingredients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: var(--bg-color);
+  border-radius: 12px;
+}
+.ingredient-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.ingredient-info {
+  flex: 1;
+}
+.ingredient-info .name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.ingredient-info .desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.ingredient-price {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+.ingredient-item.removable {
+  cursor: pointer;
+}
+.ingredient-item.removed {
+   opacity: 0.5;
+   text-decoration: line-through;
+}
+.ing-controls {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   margin-left: auto;
+}
+.ing-price {
+   font-size: 0.8rem;
+   color: var(--primary);
+   min-width: 40px;
+}
+.ing-btn {
+   background: var(--card-bg);
+   border: 1px solid var(--card-border);
+   width: 24px;
+   height: 24px;
+   border-radius: 50%;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.ing-thumb {
+   width: 40px;
+   height: 40px;
+   border-radius: 8px;
+   object-fit: cover;
+}
+.ing-info {
+   flex: 1;
+}
+.ing-name {
+   font-weight: 600;
+   font-size: 0.9rem;
+}
+.ing-desc {
+   font-size: 0.75rem;
+   color: var(--text-muted);
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--card-bg);
+  border-top: 1px solid var(--card-border);
+}
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: var(--bg-color);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+.qty-control button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qty-control span {
+  font-weight: 700;
+  font-size: 1.2rem;
+  min-width: 20px;
+  text-align: center;
+}
+.menu-items {
+  padding: 10px 24px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  padding: 12px 24px;
+  border-radius: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 10000;
+}
+#toast.show {
+  opacity: 1;
+  visibility: visible;
+}
+/* Animations */
+@keyframes slideUpBounce {
+  0% { transform: translateY(100px) scale(0.9); opacity: 0; }
+  60% { transform: translateY(-10px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+/* Settings modal */
+.settings-group {
+  margin-bottom: 24px;
+}
+.settings-group h4 {
+  margin-bottom: 12px;
+  color: var(--text-color);
+}
+.settings-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.setting-pill {
+  padding: 8px 16px;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.setting-pill.active {
+  background-color: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+/* Dark theme overrides for specific components */
+[data-theme="dark"] body {
+  background-color: var(--bg-dark);
+}
+[data-theme="dark"] .category-card {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+[data-theme="dark"] .modal-content {
+  background-color: var(--card-bg);
+}
+[data-theme="dark"] #toast {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+/* Categories scroll */
+.categories-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.categories-scroll::-webkit-scrollbar {
+  display: none;
+}
+/* Meal cards (grid layout) */
+.meal-card {
+  background-color: transparent;
+  cursor: pointer;
+}
+.meal-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 35px;
+  margin-bottom: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: 0;
+}
+.meal-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+.meal-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.meal-desc {
+  display: none;
+}
+/* Additional component styles */
+/* Category chips */
+.category-chip {
+  padding: 8px 16px;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.category-chip.active {
+  background-color: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.ing-qty {
+    font-weight: 800;
+    font-size: 1rem;
+    min-width: 15px;
+    text-align: center;
+}
+/* Modal header button */
+.modal-header-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+.modal-header-btn:hover {
+  color: var(--primary);
+}
+/* End of stylesheet */

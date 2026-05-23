@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Papomotto</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- QR Scan Screen (Simulated) -->
+        <div id="qr-screen" class="screen active" style="justify-content: center; align-items: center; text-align: center; background: var(--bg-color);">
+            <div class="qr-container" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <div style="font-size: 5rem; color: var(--primary);"><i class="fa-solid fa-utensils"></i></div>
+                <h1 style="font-size: 3rem; font-weight: 700; letter-spacing: -2px;" data-i18n="papomotto">PAPOMOTTO</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 80%;" data-i18n="qr_sub">Scan a QR code at your table to view our menu and order.</p>
+                <div class="simulated-qrs" style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px; width: 100%;">
+                    <button class="btn primary-btn" onclick="simulateScan('Table 4')"><i class="fa-solid fa-qrcode"></i> <span data-i18n="scan_table">Scan Table 4</span></button>
+                    <button class="btn primary-btn" onclick="simulateScan('Room 205')"><i class="fa-solid fa-qrcode"></i> <span data-i18n="scan_room">Scan Room 205</span></button>
+                    <button class="btn primary-btn" onclick="simulateScan('Patio 2')"><i class="fa-solid fa-qrcode"></i> <span data-i18n="scan_patio">Scan Patio 2</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Screen -->
+        <div id="categories-screen" class="screen hidden">
+            <header class="menu-header">
+                <div class="header-top" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                    <div class="location-info" style="display: flex; flex-direction: column;">
+                        <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px;" data-i18n="papomotto">PAPOMOTTO</span>
+                        <span style="font-size: 0.9rem; color: var(--primary); font-weight: 600;"><i class="fa-solid fa-location-dot"></i> <span class="current-location-display">Table 4</span></span>
+                    </div>
+                    <div class="header-actions" style="display: flex; gap: 10px;">
+                        <button class="icon-btn" style="background: var(--card-bg); border-radius: 50%; width: 45px; height: 45px;" onclick="openSettings()"><i class="fa-solid fa-globe"></i></button>
+                        <button class="icon-btn" style="background: var(--card-bg); border-radius: 50%; width: 45px; height: 45px;" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                    </div>
+                </div>
+                <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 20px;" data-i18n="craving">What are you craving?</h2>
+            </header>
+            <main class="categories-grid" style="padding: 10px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <button class="category-card" onclick="goToMenu('Starters')"><i class="fa-solid fa-seedling" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Starters">Starters</span></button>
+                <button class="category-card" onclick="goToMenu('Breakfast')"><i class="fa-solid fa-egg" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Breakfast">Breakfast</span></button>
+                <button class="category-card" onclick="goToMenu('Mains')"><i class="fa-solid fa-bowl-food" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Mains">Mains</span></button>
+                <button class="category-card" onclick="goToMenu('Cocktails')"><i class="fa-solid fa-martini-glass-citrus" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Cocktails">Cocktails</span></button>
+                <button class="category-card" onclick="goToMenu('Smoothies')"><i class="fa-solid fa-blender" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Smoothies">Smoothies</span></button>
+                <button class="category-card" onclick="goToMenu('Kids Meal')"><i class="fa-solid fa-child" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Kids Meal">Kids Meal</span></button>
+                <button class="category-card" onclick="goToMenu('Desserts')"><i class="fa-solid fa-ice-cream" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i><br><span data-i18n="Desserts">Desserts</span></button>
+            </main>
+        </div>
+
+        <!-- Menu Screen -->
+        <div id="menu-screen" class="screen hidden">
+            <header class="menu-header">
+                <div class="header-top" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="icon-btn" onclick="switchScreen('categories-screen')" style="background: var(--card-bg); border-radius: 50%; width: 45px; height: 45px;"><i class="fa-solid fa-arrow-left"></i></button>
+                        <div class="location-info" style="display: flex; flex-direction: column;">
+                            <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px;" data-i18n="papomotto">PAPOMOTTO</span>
+                            <span style="font-size: 0.9rem; color: var(--primary); font-weight: 600;"><i class="fa-solid fa-location-dot"></i> <span id="current-location">Table 4</span></span>
+                        </div>
+                    </div>
+                    <div class="header-actions" style="display: flex; gap: 10px;">
+                        <button class="icon-btn" style="background: var(--card-bg); border-radius: 50%; width: 45px; height: 45px;" onclick="openSettings()"><i class="fa-solid fa-globe"></i></button>
+                        <button class="icon-btn" style="background: var(--card-bg); border-radius: 50%; width: 45px; height: 45px;" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                        <button class="icon-btn" style="background: var(--text-color); color: var(--bg-color); border-radius: 50%; width: 45px; height: 45px; position: relative;" onclick="openCart()">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span class="badge" id="top-cart-badge" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; border-radius: 50%; padding: 4px 6px; font-size: 0.7rem; font-weight: bold; display: none;">0</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search for meals..." data-i18n-placeholder="search_placeholder">
+                </div>
+                <div class="categories-scroll">
+                    <button class="category-chip active" data-category="All" onclick="filterCategory('All')"><i class="fa-solid fa-border-all"></i> <span data-i18n="All">All</span></button>
+                    <button class="category-chip" data-category="Starters" onclick="filterCategory('Starters')"><i class="fa-solid fa-seedling"></i> <span data-i18n="Starters">Starters</span></button>
+                    <button class="category-chip" data-category="Breakfast" onclick="filterCategory('Breakfast')"><i class="fa-solid fa-egg"></i> <span data-i18n="Breakfast">Breakfast</span></button>
+                    <button class="category-chip" data-category="Mains" onclick="filterCategory('Mains')"><i class="fa-solid fa-bowl-food"></i> <span data-i18n="Mains">Mains</span></button>
+                    <button class="category-chip" data-category="Cocktails" onclick="filterCategory('Cocktails')"><i class="fa-solid fa-martini-glass-citrus"></i> <span data-i18n="Cocktails">Cocktails</span></button>
+                    <button class="category-chip" data-category="Smoothies" onclick="filterCategory('Smoothies')"><i class="fa-solid fa-blender"></i> <span data-i18n="Smoothies">Smoothies</span></button>
+                    <button class="category-chip" data-category="Kids Meal" onclick="filterCategory('Kids Meal')"><i class="fa-solid fa-child"></i> <span data-i18n="Kids Meal">Kids Meal</span></button>
+                    <button class="category-chip" data-category="Desserts" onclick="filterCategory('Desserts')"><i class="fa-solid fa-ice-cream"></i> <span data-i18n="Desserts">Desserts</span></button>
+                    <button class="category-chip" data-category="Drinks" onclick="filterCategory('Drinks')"><i class="fa-solid fa-mug-hot"></i> <span data-i18n="Drinks">Drinks</span></button>
+                </div>
+            </header>
+            
+            <main class="menu-items" id="menu-items-container">
+                <!-- Items will be generated by JS -->
+            </main>
+
+            <!-- Floating Cart Button -->
+            <button class="floating-cart" onclick="openCart()">
+                <div class="cart-icon">
+                    <i class="fa-solid fa-shopping-bag"></i>
+                    <span class="badge" id="cart-badge">0</span>
+                </div>
+                <span class="floating-cart-text" data-i18n="view_cart">View Cart</span>
+                <span class="cart-total" id="cart-total-float">$0.00</span>
+            </button>
+        </div>
+
+        <!-- Item Modal (Customization) -->
+        <div id="item-modal" class="modal hidden">
+            <div class="modal-header">
+                <button class="modal-header-btn" onclick="closeItemModal()"><i class="fa-solid fa-arrow-left"></i></button>
+                <button class="modal-header-btn"><i class="fa-solid fa-heart"></i></button>
+            </div>
+            
+            <img id="modal-image" src="" alt="Meal">
+            
+            <div class="modal-details">
+                <h2 id="modal-title">Meal Title</h2>
+                <p id="modal-desc">Description</p>
+                
+                <div class="customization">
+                    <h4 data-i18n="ingredients_header">Ingredients & Extras</h4>
+                    <div id="ingredients-list">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <div class="qty-control">
+                    <button onclick="changeModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                    <span id="modal-qty">1</span>
+                    <button onclick="changeModalQty(1)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <button class="btn primary-btn add-to-cart-btn" onclick="addToCart()">Add - <span id="modal-btn-total">$0.00</span></button>
+            </div>
+        </div>
+
+        <!-- Cart / Checkout Screen -->
+        <div id="cart-screen" class="screen hidden">
+            <header class="cart-header">
+                <button class="icon-btn" onclick="closeCart()"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 data-i18n="your_order">Your Order</h2>
+                <div style="width:40px;"></div> <!-- Spacer -->
+            </header>
+            <main class="cart-main">
+                <div id="cart-items-container">
+                    <!-- Cart items generated by JS -->
+                </div>
+                <div class="cart-notes">
+                    <label for="order-notes" data-i18n="order_notes_label">Order Notes (e.g., less salt, allergies)</label>
+                    <textarea id="order-notes" rows="3" placeholder="Add any special requests here..." data-i18n-placeholder="notes_placeholder"></textarea>
+                </div>
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span data-i18n="subtotal">Subtotal</span>
+                        <span id="cart-subtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span data-i18n="tax">Tax (10%)</span>
+                        <span id="cart-tax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span data-i18n="total">Total</span>
+                        <span id="cart-final-total">$0.00</span>
+                    </div>
+                </div>
+            </main>
+            <footer class="cart-footer">
+                <button class="btn primary-btn submit-order-btn" onclick="submitOrder()" data-i18n="submit_order">Submit Order</button>
+            </footer>
+        </div>
+        
+        <!-- Order Success Modal -->
+        <div id="success-modal" class="modal hidden" style="align-items: center; justify-content: center; z-index: 9999;">
+             <div class="modal-content" style="border-radius: 20px; text-align: center; padding: 40px 20px; max-width: 400px; height: auto;">
+                 <div class="success-icon" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;">
+                     <i class="fa-solid fa-check-circle"></i>
+                 </div>
+                 <h2 data-i18n="order_placed">Order Placed!</h2>
+                 <p>Your order has been sent to the kitchen. It will be delivered to <b id="success-location"></b> shortly.</p>
+                 <button class="btn primary-btn" style="margin-top: 20px; width: 100%;" onclick="resetApp()" data-i18n="new_order">Start New Order</button>
+             </div>
+        </div>
+
+        <!-- Settings Modal (Language & Currency) -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-header">
+                <button class="modal-header-btn" onclick="closeSettings()"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 style="font-size: 1.5rem; font-weight: 800;" data-i18n="settings_title">Settings</h2>
+                <div style="width: 45px;"></div>
+            </div>
+            <div class="modal-details" style="margin-top: 100px;">
+                <div class="settings-group">
+                    <h4 data-i18n="language">Language</h4>
+                    <div class="settings-options" id="lang-options">
+                        <button class="setting-pill" onclick="setLanguage('en')">English</button>
+                        <button class="setting-pill" onclick="setLanguage('es')">Español</button>
+                        <button class="setting-pill" onclick="setLanguage('fr')">Français</button>
+                        <button class="setting-pill" onclick="setLanguage('de')">Deutsch</button>
+                        <button class="setting-pill" onclick="setLanguage('it')">Italiano</button>
+                        <button class="setting-pill" onclick="setLanguage('pt')">Português</button>
+                        <button class="setting-pill" onclick="setLanguage('ja')">日本語</button>
+                        <button class="setting-pill" onclick="setLanguage('zh')">中文</button>
+                        <button class="setting-pill" onclick="setLanguage('ko')">한국어</button>
+                        <button class="setting-pill" onclick="setLanguage('th')">ไทย</button>
+                        <button class="setting-pill" onclick="setLanguage('sw')">Swahili</button>    
+                        <button class="setting-pill" onclick="setLanguage('luo')">Luo</button>
+                        
+                    </div>
+                </div>
+                <div class="settings-group" style="margin-top: 30px;">
+                    <h4 data-i18n="currency">Currency</h4>
+                    <div class="settings-options" id="currency-options">
+                        <button class="setting-pill" onclick="setCurrency('USD')">USD ($)</button>
+                        <button class="setting-pill" onclick="setCurrency('EUR')">EUR (€)</button>
+                        <button class="setting-pill" onclick="setCurrency('GBP')">GBP (£)</button>
+                        <button class="setting-pill" onclick="setCurrency('JPY')">JPY (¥)</button>
+                        <button class="setting-pill" onclick="setCurrency('CAD')">CAD (C$)</button>
+                        <button class="setting-pill" onclick="setCurrency('AUD')">AUD (A$)</button>
+                        <button class="setting-pill" onclick="setCurrency('CNY')">CNY (¥)</button>
+                        <button class="setting-pill" onclick="setCurrency('BRL')">BRL (R$)</button>
+                        <button class="setting-pill" onclick="setCurrency('MXN')">MXN (MX$)</button>
+                        <button class="setting-pill" onclick="setCurrency('INR')">INR (₹)</button>
+                        <button class="setting-pill" onclick="setCurrency('UGX')">UGX (U)</button>
+                        
+                    </div>
+                </div>
+                <div class="settings-group" style="margin-top: 30px;">
+                    <h4 data-i18n="theme">Theme</h4>
+                    <div class="settings-options" id="theme-options">
+                        <button class="setting-pill" onclick="setTheme('light')" id="theme-light-btn">Light</button>
+                        <button class="setting-pill" onclick="setTheme('dark')" id="theme-dark-btn">Dark</button>
+                    </div>
+                </div>
+                <div id="detection-info" style="margin-top: 40px; padding: 15px; border-radius: 15px; background: rgba(0,0,0,0.03); text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-circle-info"></i> <span id="detection-text">Detecting location...</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn primary-btn add-to-cart-btn" onclick="closeSettings()" data-i18n="close">Close</button>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast">Meal added to order!</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

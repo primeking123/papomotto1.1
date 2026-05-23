@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papomotto - Kitchen Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="kitchen.css">
+</head>
+<body>
+    <header class="k-header">
+        <h1>Papomotto <span class="badge-title">Kitchen Display System</span></h1>
+        <div class="k-actions">
+            <select id="kitchen-lang" onchange="changeKitchenLang(this.value)" class="lang-select">
+                <option value="en">English (EN)</option>
+                <option value="es">Español (ES)</option>
+                <option value="fr">Français (FR)</option>
+                <option value="de">Deutsch (DE)</option>
+                <option value="it">Italiano (IT)</option>
+                <option value="pt">Português (PT)</option>
+                <option value="ja">日本語 (JA)</option>
+                <option value="zh">中文 (ZH)</option>
+                <option value="ko">한국어 (KO)</option>
+                <option value="th">ไทย (TH)</option>
+                <option value="sw">Kiswahili (SW)</option>
+                <option value="luo">Luo (LU)</option>
+            </select>
+            <button id="sound-toggle" onclick="toggleSound()"><i class="fa-solid fa-bell"></i> Sound ON</button>
+            <span id="time-display">00:00</span>
+        </div>
+    </header>
+    
+    <main class="kanban-board">
+        <div class="kanban-column" id="col-incoming">
+            <h2>Incoming <span class="count" id="count-incoming">0</span></h2>
+            <div class="kanban-items" id="list-incoming"></div>
+        </div>
+        <div class="kanban-column" id="col-preparing">
+            <h2>Preparing <span class="count" id="count-preparing">0</span></h2>
+            <div class="kanban-items" id="list-preparing"></div>
+        </div>
+        <div class="kanban-column" id="col-ready">
+            <h2>Ready <span class="count" id="count-ready">0</span></h2>
+            <div class="kanban-items" id="list-ready"></div>
+        </div>
+        <div class="kanban-column" id="col-delivered">
+            <h2>Delivered <span class="count" id="count-delivered">0</span></h2>
+            <div class="kanban-items" id="list-delivered"></div>
+        </div>
+    </main>
+
+    <!-- Invisible audio element for notification -->
+    <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <script src="kitchen.js"></script>
+</body>
+</html>

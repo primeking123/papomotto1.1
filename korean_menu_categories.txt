@@ -1,0 +1,35 @@
+Appetizers: 앱테이터
+Mains: 메인 요리
+Desserts: 디저트
+Drinks: 음료
+Breakfast: 아침
+Lunch: 점심
+Dinner: 저녁
+Kids Menu: 어린이 메뉴
+Salads: 샐러드
+Sides: 사이드
+Soups: 수프
+Seafood: 해산물
+Beef: 소고기
+Chicken: 치킨
+Pork: 돼지고기
+Vegetarian: 채식
+Vegan: 비건
+Burgers: 버거
+Pizza: 피자
+Pasta: 파스타
+Rice: 밥류
+Noodles: 국수
+Sandwiches: 샌드위치
+Smoothies: 스무디
+Cocktails: 칵테일
+Coffee: 커피
+Tea: 차
+Juice: 주스
+Wine: 와인
+Beer: 맥주
+Spirits: 위스키
+Soft Drinks: 탄산 음료
+Water: 물
+Bakery: 베이커리
+Ice Cream: 아이스크림
